@@ -24,13 +24,14 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
    - Inspect `.agent/assets/architecture/system.md` and relevant module files to determine component boundaries.
    - Inspect `.agent/assets/why/` to identify non-negotiable invariants and past technical decisions.
    - Inspect `.agent/assets/language/<lang>.md` to identify project-specific language idioms and standards.
+   - Inspect `.agent/assets/domain/general.md` and relevant topic files under `.agent/assets/domain/topics/` to identify business invariants and entity lifecycles.
    - Inspect any files or assets explicitly designated by the user.
    - Search the codebase to map call chains, imports, and touchpoint files.
 
 2. **Grill gate**:
-   - Run the `grill-me` skill workflow.
-   - Interview the user relentlessly, asking questions one at a time with a recommended answer, until every architectural choice, scope boundary, and edge case is settled.
-   - If discovery shows zero ambiguity and trivial touchpoints, summarize baseline assumptions and ask the user for confirmation beforehand before writing files.
+   - Run the `grill-me` skill workflow following the format and rules in `.agent/skills/grill-me/SKILL.md`.
+   - Ask decisions sequentially, presenting one question per turn with background, explicit options, and a recommended answer.
+   - If discovery shows zero ambiguity and trivial touchpoints, summarize baseline assumptions and ask the user for confirmation before writing files.
 
 3. **Emit scope artifacts**:
    - Initialize `.agent/scope/`.
@@ -111,6 +112,7 @@ List what must be created or updated in .agent/assets/ when implementation succe
 - **Architecture**: <update system.md or create modules/<name>.md, or "None">
 - **Decisions (why)**: <create .agent/assets/why/<component>/<decision>.md, or "None">
 - **Language guide**: <add newly introduced project idiom to .agent/assets/language/<lang>.md, or "None">
+- **Domain**: <update general.md or create topics/<topic>.md, or "None">
 
 ## Handoff checklist
 - [ ] All atomic steps in coder-plan.md verified and passed.

@@ -5,30 +5,36 @@ description: Grill the user relentlessly about a plan, decision, or idea. Use wh
 
 # Grill me
 
-Interview the user relentlessly until you reach a shared understanding. Map this as a design tree: every decision branches into the decisions that hang off it.
+Interview the user relentlessly until you reach a shared understanding. Map the discussion as a design tree where every decision branches into dependent decisions.
 
-Work the tree in rounds. The frontier is every decision whose prerequisites are already settled: the questions you can ask now without guessing at answers you have not heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user answers before the next round.
+Work the tree sequentially. The frontier contains decisions whose prerequisites are already settled. Ask questions one at a time. This avoids cognitive overload and allows each answer to reshape the remaining tree.
 
-Format a round like so:
+## Question format
+
+Format each question with background, concrete options, a direct question statement, and a recommended answer:
 
 ```markdown
-Q1: <question title>
-<question body, including background and options>
+### Q<number>: <question title>
 
-Recommended answer: <your recommended answer>
+**Background**:
+<1 to 2 sentences explaining the context, problem, or trade-off.>
 
----
+**Options**:
+- **Option A (Recommended)**: <concrete description of recommended choice>
+- **Option B**: <alternative choice>
+- **Option C**: <alternative choice or "None">
 
-Q2: <question title>
-<question body, including background and options>
+**Question**:
+<Direct question worded so answering "yes" accepts the recommended option.>
 
-Recommended answer: <your recommended answer>
+**Recommended answer**:
+Yes. <1 to 2 sentences explaining why Option A is chosen.>
 ```
 
-Word each question so answering "yes" accepts your recommended answer.
+## Interview rules
 
-Each round the user answers reshapes the tree. Settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a later round, not this one.
-
-Finding facts is your job, never the user's. When a frontier question needs a fact from the environment or codebase, explore it directly or dispatch a sub-agent to find it. Do not ask the user for anything you can look up yourself. Unsettled prerequisites wait for exploration to finish, while independent questions in the frontier can be asked immediately. The decisions belong to the user: put each decision to them and wait.
-
-The session finishes when the frontier is empty: every branch of the design tree is visited, and nothing is left silently assumed. Do not act on the plan until the user confirms you have reached a shared understanding.
+1. **One decision at a time**: Present one question per turn. Wait for the user response before advancing the tree.
+2. **Word for consent**: Word each question so that answering "yes" accepts the recommended answer. The user can also pick an alternative option or provide custom guidance.
+3. **Explore before asking**: Finding facts is your job, never the user's. Search codebases, inspect configurations, or check documentation directly. Never ask the user for information you can discover yourself.
+4. **Dynamic frontier**: Each user answer settles one branch and unblocks dependent decisions. Recompute the frontier after each answer.
+5. **Termination**: The interview ends when the frontier is empty. Every architectural choice, boundary, and trade-off must be settled. Do not proceed to implementation or file creation until the user confirms you have reached a shared understanding.

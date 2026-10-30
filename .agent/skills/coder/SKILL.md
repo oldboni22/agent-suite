@@ -22,7 +22,9 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
 
 1. Inspect `.agent/scope/coder-plan.md` to verify the execution plan exists.
 2. Read the relevant language guide asset in `.agent/assets/language/<lang>.md`.
-3. Spawn a dedicated subagent using `callSubAgent` with `runInClient: true`.
+3. Dispatch an isolated execution worker with local shell and filesystem access:
+   - Host platforms with subagent tools (e.g. LobeHub): call the subagent tool with client environment execution (`runInClient: true`).
+   - Single-agent harnesses or CLI tools (e.g. Claude Code, Cursor, Aider): run an isolated implementation session with a clean context fence.
 4. Inject into the subagent prompt:
    - Full content of `.agent/scope/coder-plan.md`.
    - Relevant content of `.agent/assets/language/<lang>.md`.
@@ -46,23 +48,29 @@ The subagent must adhere to these rules:
    - Perform precise in-place updates. Do not overwrite entire files unless creating a brand new file.
    - Preserve existing unrelated logic and comments.
 
-4. **Testing policy**:
+4. **Code comments**:
+   - Write comments only to explain non-obvious mechanisms, invariants, edge cases, or external protocol constraints.
+   - Do not write obvious, tautological, or narrative comments that merely restate what the code does (e.g. `// return error`, `// increment counter`).
+   - Never add task-tracking comments, step numbers, or agent attribution (e.g. `// step 1 change`, `// modified by coder agent`).
+   - Every comment must strictly follow `.agent/skills/unslop/SKILL.md`: plain words, active voice, sentence case, straight quotes, no decorative emojis, no em dashes, and one idea per sentence.
+
+5. **Testing policy**:
    - Do not create new unit test files.
    - Do not add new unit tests to existing test files.
    - If existing tests fail due to intentional contract changes specified in the plan, update the assertions to match the new contract.
 
-5. **Step verification gate**:
+6. **Step verification gate**:
    - Run the specified verification command immediately after completing changes for that step.
    - If verification passes, log the step status as PASS in `.agent/scope/run/progress.md`. Proceed to the next step.
    - If verification fails, increment the iteration counter for that step in `.agent/scope/run/progress.md`. Attempt a targeted fix within the bounds of that step.
 
-6. **Iteration limit and blocking**:
+7. **Iteration limit and blocking**:
    - A step allows a maximum of 3 attempts (1 initial attempt plus 2 retries).
    - If a step fails verification on the 3rd attempt, halt execution immediately.
    - Mark overall status as BLOCKED in `.agent/scope/run/progress.md`.
    - Record the blocker hypothesis and exact failure output. Exit without modifying additional files.
 
-7. **Completion and handoff**:
+8. **Completion and handoff**:
    - When all steps pass verification, mark overall status as COMPLETED in `.agent/scope/run/progress.md`.
    - Do not attempt to self-audit diffs or clean up `.agent/scope/`.
    - Exit cleanly and report status to the orchestrator.
