@@ -9,9 +9,22 @@ Interview the user relentlessly until you reach a shared understanding. Map the 
 
 Work the tree sequentially. The frontier contains decisions whose prerequisites are already settled. Ask questions one at a time. This avoids cognitive overload and allows each answer to reshape the remaining tree.
 
-## Question format
+## Modes of engagement
 
-Format each question with background, concrete options, a direct question statement, and a recommended answer:
+### 1. Discussion and architectural sparring mode
+When the user's response is exploratory, indecisive, asks "what do you think?", or pushes back on a premise:
+- Shift into an architectural sparring partner.
+- Discuss trade-offs, edge cases, and real-world implications directly and concisely.
+- Do not modify or branch the design tree prematurely while in active discussion.
+- Do not force multiple-choice options or binary consent during an ongoing exchange.
+- Only when a natural stopping point or consensus in the discussion is reached, formulate the settled choice or next unresolved decision as a structured question.
+
+### 2. Structured frontier mode
+When presenting a new unresolved decision on the frontier or locking in a discussed direction:
+- Present exactly one question per turn using the structured format below.
+- Format each question with background, concrete options, a direct question statement, and a recommended answer.
+
+## Question format
 
 ```markdown
 ### Q<number>: <question title>
@@ -33,8 +46,9 @@ Yes. <1 to 2 sentences explaining why Option A is chosen.>
 
 ## Interview rules
 
-1. **One decision at a time**: Present one question per turn. Wait for the user response before advancing the tree.
-2. **Word for consent**: Word each question so that answering "yes" accepts the recommended answer. The user can also pick an alternative option or provide custom guidance.
-3. **Explore before asking**: Finding facts is your job, never the user's. Search codebases, inspect configurations, or check documentation directly. Never ask the user for information you can discover yourself.
-4. **Dynamic frontier**: Each user answer settles one branch and unblocks dependent decisions. Recompute the frontier after each answer.
-5. **Termination**: The interview ends when the frontier is empty. Every architectural choice, boundary, and trade-off must be settled. Do not proceed to implementation or file creation until the user confirms you have reached a shared understanding.
+1. **One decision at a time**: Present one structured question per turn when on the frontier. Wait for the user response before advancing the tree.
+2. **Word for consent in frontier mode**: Word each structured question so that answering "yes" accepts the recommended answer. The user can also pick an alternative option, provide custom guidance, or open a discussion.
+3. **No premature tree mutations**: While discussing a branch, do not alter the broader decision tree until the trade-off is settled.
+4. **Explore before asking**: Finding facts is your job, never the user's. Search codebases, inspect configurations, or check documentation directly. Never ask the user for information you can discover yourself.
+5. **Dynamic frontier**: Each settled user answer resolves one branch and unblocks dependent decisions. Recompute the frontier after each answer.
+6. **Termination**: The interview ends when the frontier is empty. Every architectural choice, boundary, and trade-off must be settled. Do not proceed to implementation or file creation until the user confirms you have reached a shared understanding.

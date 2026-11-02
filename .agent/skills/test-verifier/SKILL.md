@@ -1,12 +1,12 @@
 ---
 name: test-verifier
-description: Audit test suites against scope boundaries, repository tool suites, and synthetic mutation red-green checks to emit structured verdicts in .agent/scope/run/test-verdict.md using an isolated client subagent.
+description: Audit test suites against scope boundaries, repository tool suites, and atomic mutation checks to emit structured verdicts in .agent/scope/run/test-verdict.md using an isolated client subagent.
 disable-model-invocation: true
 ---
 
 # Test verifier
 
-Audit newly authored test suites against task plans, repository standards, and regression effectiveness. The test verifier orchestrator spawns a dedicated subagent running in the client environment. The subagent inspects git deltas, verifies file boundaries, executes configured tool suites from `.agent/assets/testing/`, performs a synthetic mutation red-green check to prevent vacuous tests, and records an auditable verdict in `.agent/scope/run/test-verdict.md`.
+Audit newly authored test suites against task plans, repository standards, and regression effectiveness. The test verifier orchestrator spawns a dedicated subagent running in the client environment. The subagent inspects git deltas, verifies file boundaries, executes configured tool suites from `.agent/assets/testing/`, performs atomic mutation checks to prevent vacuous tests, and records an auditable verdict in `.agent/scope/run/test-verdict.md`.
 
 ## Style and writing rules
 
@@ -21,7 +21,7 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
 ## Orchestrator workflow
 
 1. Inspect `.agent/scope/test-plan.md` to confirm test contracts and scenarios exist.
-2. Read `.agent/assets/testing/conventions.md` to identify configured test runners, tool suites, and execution commands.
+2. Read `.agent/assets/testing/conventions.md` to identify configured test runners, mutation tools, and execution commands.
 3. Dispatch an isolated execution worker with local shell and filesystem access:
    - Host platforms with subagent tools (e.g. LobeHub): call the subagent tool with client environment execution (`runInClient: true`).
    - Single-agent harnesses or CLI tools (e.g. Claude Code, Cursor, Aider): run an isolated audit session with a clean context fence.
@@ -37,7 +37,7 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
 The subagent must adhere to these rules:
 
 1. **Working directory and isolation**:
-   - Operate strictly within the current repository.
+   - Operate strictly within the current repository or assigned worktree.
    - Do not edit or refactor test files permanently. The test verifier is an auditor.
 
 2. **Diff acquisition and boundary check**:
@@ -50,12 +50,15 @@ The subagent must adhere to these rules:
    - **Boundary check**: Verify no production source files were modified, and no untracked scratch files remain outside `.agent/scope/`.
    - **Baseline test execution**: Run the repository test command from `.agent/assets/testing/conventions.md`. Ensure all tests pass. If tests fail against unchanged production code, see rule 4 below.
    - **Tool suites check**: If `.agent/assets/testing/conventions.md` specifies repository tool suites (such as race detection, coverage thresholds, or test linters), execute each suite and verify pass criteria.
-   - **Synthetic mutation check (Red-Green verification)**:
-     - Perform a temporary synthetic code perturbation in the production logic exercised by the new tests (such as inverting a condition, negating a return value, or forcing an error branch).
-     - Run the target test.
-     - Verify that the test fails (RED). If the test continues to pass despite the perturbed logic, fail this check with `FAIL: TEST_VACUOUS`.
-     - Revert the temporary mutation immediately (`git checkout -- <file>`).
-     - Re-run the test to confirm it returns to PASS (GREEN).
+   - **Atomic mutation verification check**:
+     - *Native mutation tool path*: If `.agent/assets/testing/conventions.md` specifies a native mutation runner (such as `go-mutesting` or `mutmut`), execute that tool suite directly. Verify score or mutation survival criteria.
+     - *Synthetic LLM perturbation path (fallback)*:
+       1. Verify working tree is clean outside new test files.
+       2. Apply a single surgical code perturbation in production logic exercised by the new tests (such as inverting a condition, negating a return value, or forcing an early return).
+       3. Run the target test suite. Confirm the test fails (RED). If the test still passes, mark `FAIL: TEST_VACUOUS`.
+       4. Immediately revert the perturbation: `git checkout -- <modified-production-file>`.
+       5. Re-run the test to confirm it returns to PASS (GREEN).
+       6. Ensure `git status --porcelain` shows zero remaining modifications to production files.
    - **Test quality and unslop check**: Verify tests do not contain tautological assertions (e.g. asserting true on true), tautological mocks, or narrative code comments violating unslop rules.
 
 4. **Production defect detection and escalation**:
@@ -90,7 +93,7 @@ The subagent must adhere to these rules:
 - Boundary check: <PASS | FAIL. If fail, list unauthorized files touched.>
 - Baseline test execution: <PASS | FAIL. If fail, paste failure details.>
 - Tool suites check: <PASS | FAIL | SKIPPED. If fail, paste tool failure output.>
-- Synthetic mutation check: <PASS | FAIL. If fail, identify which mutation failed to trigger RED.>
+- Mutation check: <PASS | FAIL. Indicate native runner output or synthetic perturbation result.>
 - Test quality and unslop check: <PASS | FAIL. If fail, cite specific vacuous assertion or unslop violation.>
 - Actionable findings:
   - <Specific finding with file and line reference, or "None">

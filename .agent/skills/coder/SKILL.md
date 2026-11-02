@@ -20,7 +20,7 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
 
 ## Orchestrator workflow
 
-1. Inspect `.agent/scope/coder-plan.md` to verify the execution plan exists.
+1. Inspect `.agent/scope/coder-plan.md` to verify the execution plan exists. Confirm step count does not exceed 5.
 2. Read the relevant language guide asset in `.agent/assets/language/<lang>.md`.
 3. Dispatch an isolated execution worker with local shell and filesystem access:
    - Host platforms with subagent tools (e.g. LobeHub): call the subagent tool with client environment execution (`runInClient: true`).
@@ -36,7 +36,7 @@ All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
 The subagent must adhere to these rules:
 
 1. **Working directory and isolation**:
-   - Operate strictly within the current repository.
+   - Operate strictly within the assigned execution directory (repository root or assigned worktree).
    - Initialize `.agent/scope/run/progress.md` before executing steps.
 
 2. **Sequential execution**:
@@ -50,13 +50,14 @@ The subagent must adhere to these rules:
 
 4. **Code comments**:
    - Write comments only to explain non-obvious mechanisms, invariants, edge cases, or external protocol constraints.
-   - Do not write obvious, tautological, or narrative comments that merely restate what the code does (e.g. `// return error`, `// increment counter`).
-   - Never add task-tracking comments, step numbers, or agent attribution (e.g. `// step 1 change`, `// modified by coder agent`).
+   - Do not write obvious, tautological, or narrative comments that merely restate what the code does.
+   - Never add task-tracking comments, step numbers, or agent attribution.
    - Every comment must strictly follow `.agent/skills/unslop/SKILL.md`: plain words, active voice, sentence case, straight quotes, no decorative emojis, no em dashes, and one idea per sentence.
 
 5. **Testing policy**:
-   - Do not create new unit test files.
+   - Do not create new unit test files in `src/`.
    - Do not add new unit tests to existing test files.
+   - If runtime verification requires a throwaway script, create it strictly inside `.agent/scope/scratch/`. Never commit or move scratch files to `src/`.
    - If existing tests fail due to intentional contract changes specified in the plan, update the assertions to match the new contract.
 
 6. **Step verification gate**:
@@ -64,14 +65,17 @@ The subagent must adhere to these rules:
    - If verification passes, log the step status as PASS in `.agent/scope/run/progress.md`. Proceed to the next step.
    - If verification fails, increment the iteration counter for that step in `.agent/scope/run/progress.md`. Attempt a targeted fix within the bounds of that step.
 
-7. **Iteration limit and blocking**:
+7. **Hard iteration ceiling and blocking**:
    - A step allows a maximum of 3 attempts (1 initial attempt plus 2 retries).
    - If a step fails verification on the 3rd attempt, halt execution immediately.
-   - Mark overall status as BLOCKED in `.agent/scope/run/progress.md`.
-   - Record the blocker hypothesis and exact failure output. Exit without modifying additional files.
+   - Do not attempt workarounds that edit outside files or modify scope boundaries.
+   - Mark overall status as `BLOCKED: STEP_ITERATION_LIMIT_EXCEEDED` in `.agent/scope/run/progress.md`.
+   - Record the blocker hypothesis, expected behavior, and exact compiler or test output. Exit immediately.
 
 8. **Completion and handoff**:
    - When all steps pass verification, mark overall status as COMPLETED in `.agent/scope/run/progress.md`.
+   - If executing a sub-task milestone of a decomposed plan, stage and create an intermediate commit on the task branch:
+     `git commit -m "feat(<scope>): <sub-task summary>"`.
    - Do not attempt to self-audit diffs or clean up `.agent/scope/`.
    - Exit cleanly and report status to the orchestrator.
 
@@ -82,7 +86,7 @@ The subagent must adhere to these rules:
 ```markdown
 # Implementation progress
 
-## Overall status: <IN_PROGRESS | BLOCKED | COMPLETED>
+## Overall status: <IN_PROGRESS | BLOCKED | BLOCKED: STEP_ITERATION_LIMIT_EXCEEDED | COMPLETED>
 
 ## Step 1: <step title>
 - Status: <PASS | FAIL>
@@ -90,7 +94,7 @@ The subagent must adhere to these rules:
 - Notes: <optional observations or adjustments>
 
 ## Step 2: <step title>
-- Status: <PASS | FAIL | BLOCKED>
+- Status: <PASS | FAIL | BLOCKED | BLOCKED: STEP_ITERATION_LIMIT_EXCEEDED>
 - Iterations: <count, max 3>
 - Iteration 1: <PASS or failure details>
 - Iteration 2: <PASS or failure details>
