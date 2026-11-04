@@ -10,14 +10,17 @@ This repository cleanly separates **agent capabilities** from **agent roles**:
 agent-suite/
   ├── skills/           # Reusable tools, procedures, and guardrails
   │   ├── grill-me/     # Relentless design tree interrogation and sparring
+  │   ├── honest/       # Objective technical truth, mechanistic pushback, zero bootlicking
   │   ├── unslop/       # Plain-language rules and anti-AI-slop editorial standard
   │   ├── architecture/ # Maps component boundaries and layers
   │   ├── domain/       # Discovers and structures domain entities
   │   ├── language/     # Curates language-specific conventions and idioms
+  │   ├── testing/      # Curates testing conventions and mutation paths
   │   ├── why/          # Architectural decision records (ADRs) and trade-offs
   │   └── index/        # Indexes and synchronizes living assets with code drift
   │
   └── agents/           # Specialized agent personas and system prompt specs
+      ├── architect.md  # Knowledge stewardship, living assets, and drift reconciliation
       ├── planner.md    # Discovery, requirements sparring, and task decomposition
       ├── coder.md      # Surgical implementation and compiler verification
       ├── code-verifier.md # Read-only auditor checking git diffs against invariants
@@ -28,9 +31,9 @@ agent-suite/
 ## Core Philosophy
 
 - **Zero guessing**: Clarify requirements and settle architectural choices using `grill-me` before touching code.
-- **Living assets**: Maintain persistent architecture, language idioms, and decisions inside target repositories (`.agent/assets/`).
+- **Living assets**: Maintain persistent architecture, language idioms, and decisions inside target repositories (`.agent/assets/`) governed by `architect`.
 - **Minimal ceremony**: Eliminate ephemeral markdown state machines and procedural overhead. Let the harness manage execution and let the agents focus on the work.
-- **Role separation**: Feature coders do not self-audit diffs or self-author tests; dedicated auditors verify diffs and test suites.
+- **Role separation**: Feature coders do not self-audit diffs or self-author tests; execution agents maintain read-only access to assets while dedicated auditors verify diffs and test suites.
 
 ## Attribution
 

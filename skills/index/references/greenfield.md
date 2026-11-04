@@ -9,7 +9,7 @@ In a greenfield project, no code, tests, or build manifests exist to reverse-eng
 ## Procedure
 
 1. **Domain interview**:
-   - Run the `grill-me` workflow to establish the business problem.
+   - Run the `grill-me` workflow to establish the business problem, observing `honest` rules.
    - Ask the user to define the core purpose of the application and the problem it solves.
    - Elicit primary real-world actors, external system integrations, and universal business invariants.
    - Write `.agent/assets/domain/general.md` using the template from `.agent/skills/domain/SKILL.md`.
@@ -26,12 +26,13 @@ In a greenfield project, no code, tests, or build manifests exist to reverse-eng
    - Elicit idiomatic conventions, preferred standard library defaults, and project-specific guardrails.
    - Write `.agent/assets/language/<lang>.md` using the template from `.agent/skills/language/SKILL.md`.
 
-4. **Operational commands and root runbook**:
+4. **Asset index manifest generation**:
    - Confirm expected build, compile, and run commands with the user.
-   - Create `AGENT.md` at the repository root.
-   - Follow the root runbook structure: framework pointer to `.agent/README.md`, working directory rules, unslop compliance, zero guessing, and canonical CLI commands.
+   - Generate `.agent/assets/index.md` with `last_synced_commit: <sha>` on line 1.
+   - List the canonical build, lint, and run commands and direct links to active living assets.
    - Defer testing assets until testing tools and runners are introduced during feature implementation.
+   - Do not create or overwrite user-owned root files (`AGENT.md`, `CLAUDE.md`).
 
 5. **Style audit**:
-   - Verify every newly written asset and root `AGENT.md` complies with `.agent/skills/unslop/SKILL.md`.
-   - Remove any temporary scratch files outside `.agent/assets/` and root `AGENT.md`.
+   - Verify every newly written asset complies with `.agent/skills/unslop/SKILL.md` and `.agent/skills/honest/SKILL.md`.
+   - Remove any temporary scratch files outside `.agent/assets/`.

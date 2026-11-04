@@ -25,7 +25,7 @@ An established codebase contains concrete technical artifacts, but business inte
 
 3. **Domain elicitation and grill gate**:
    - Extract candidate domain entities, states, and external API integrations from public types and interfaces.
-   - Run the `grill-me` workflow sequentially with the user.
+   - Run the `grill-me` workflow sequentially with the user, strictly observing `honest` rules (no flattery, no performative apologies, objective pushback).
    - Require the user to define the core business problem, primary actors, and universal business invariants.
    - Require the user to confirm entity lifecycles and validation rules for critical workflows.
    - Write `.agent/assets/domain/general.md` and relevant topic files under `.agent/assets/domain/topics/`.
@@ -42,11 +42,12 @@ An established codebase contains concrete technical artifacts, but business inte
    - Document common anti-patterns or LLM blind spots observed in the codebase.
    - Write `.agent/assets/language/<lang>.md`.
 
-6. **Root runbook generation**:
-   - Generate `AGENT.md` at the repository root.
-   - Ensure `AGENT.md` remains lean: reference `.agent/README.md`, specify working directory and execution flags, mandate unslop compliance, and list verified CLI commands.
-   - Never duplicate directory layouts or framework state machine details in `AGENT.md`.
+6. **Asset index manifest generation**:
+   - Generate `.agent/assets/index.md`.
+   - Place `last_synced_commit: <sha>` on line 1 using current `git rev-parse HEAD`.
+   - List canonical CLI commands (build, lint, test) and relative asset pointers.
+   - Do not create or overwrite user-owned root files (`AGENT.md`, `CLAUDE.md`).
 
 7. **Style audit**:
-   - Validate every generated asset file against `.agent/skills/unslop/SKILL.md`.
+   - Validate every generated asset file against `.agent/skills/unslop/SKILL.md` and `.agent/skills/honest/SKILL.md`.
    - Confirm all headings use sentence case, straight quotes, active voice, and zero decorative emojis or em dashes.

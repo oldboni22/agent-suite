@@ -1,32 +1,31 @@
 ---
 name: index
-description: Initialize and maintain repository living assets in .agent/assets/ and the root AGENT.md by inspecting codebase state, tracking last synced commits, and grilling the user via dedicated path references.
+description: Initialize and maintain repository living assets in .agent/assets/ and .agent/assets/index.md by inspecting codebase state, tracking last synced commits, and grilling the user via dedicated path references.
 disable-model-invocation: true
 ---
 
 # Index
 
-Initialize and maintain repository living assets in `.agent/assets/` and the root operational runbook in `AGENT.md`. The index skill detects repository maturity, selects the corresponding onboarding or maintenance reference guide, tracks exploration progress in `.agent/scope/index-state.md`, verifies the lifecycle flow in `.agent/assets/flow/lifecycle.md`, tracks commit sync markers in `AGENT.md`, writes directly to asset files, and eliminates ambiguity through relentless user grilling.
+Initialize and maintain repository living assets in `.agent/assets/` and the entry manifest in `.agent/assets/index.md`. The index skill detects repository maturity, selects the corresponding onboarding or maintenance reference guide, tracks exploration progress in `.agent/scope/index-state.md`, verifies commit sync markers in line 1 of `.agent/assets/index.md`, writes directly to asset files, and eliminates ambiguity through relentless user grilling.
 
 ## Universal skills and repository assets invariant
 
 Maintain strict boundary separation between framework skills and living assets:
 - Framework skills in `.agent/skills/` are universal, portable, and tool-agnostic. They never hardcode specific programming languages, build runners, or test commands.
 - Living assets in `.agent/assets/` are repository-specific and concrete. They store accumulated project knowledge, exact CLI commands, module boundaries, domain rules, and testing conventions.
+- Living assets are completely self-contained. The repository root (`AGENT.md`, `CLAUDE.md`, or custom user manifests) is fully owned by the user and decoupled from the asset memory store.
 
-## Root AGENT.md maintenance rules
+## Asset index (.agent/assets/index.md) maintenance rules
 
-The root `AGENT.md` is the primary entry point and operational runbook for external agents contacting the repository:
-- Locate `AGENT.md` strictly at the repository root, never inside `.agent/`.
-- Point to `.agent/README.md` as the authoritative driver for framework lifecycle, role state machines, and core invariants.
-- Track asset synchronization freshness: maintain `last_synced_commit: <sha>` near the top of `AGENT.md`.
-- State repository operational constraints: working directory, execution paths, unslop compliance, and zero-guessing rules.
-- List canonical operational commands: compile, typecheck, lint, test, and run.
-- Never duplicate framework lifecycle tables, skill rosters, or full architectural specifications. Keep `AGENT.md` lean and factual.
+`.agent/assets/index.md` is the primary entry point and machine-readable manifest for agents exploring repository assets:
+- **First line commit sync marker**: Line 1 MUST strictly be `last_synced_commit: <sha>`. Tools capable of reading single line ranges (`loc: [0, 1]`) read this line directly to verify freshness without parsing the entire file.
+- **Asset manifest**: Provide direct paths to active living assets (`architecture/system.md`, `domain/general.md`, `testing/conventions.md`, `language/<lang>.md`, `why/`).
+- **Canonical execution commands**: List essential one-line CLI verification commands (build, lint, test) so agents can verify changes without traversing multiple asset subdirectories.
+- Keep `.agent/assets/index.md` concise and strictly under 30 lines. Never duplicate full architecture or domain specifications.
 
 ## Style and writing rules
 
-All output produced by this skill and all generated asset files must follow `.agent/skills/unslop/SKILL.md`:
+All output produced by this skill and all generated asset files must follow `.agent/skills/unslop/SKILL.md` and `.agent/skills/honest/SKILL.md`:
 - State what the system does, not how it feels (Rule 27). Name mechanisms and concrete behaviors.
 - Prefer active voice (Rule 29). Name the component acting.
 - Use plain words over metaphors (Rules 7, 26, 31). Avoid filler words and buzzwords.
@@ -38,7 +37,7 @@ All output produced by this skill and all generated asset files must follow `.ag
 
 1. **Path selection**:
    Inspect the working tree and `.agent/assets/` to determine the repository condition:
-   - **Reindex path**: If `.agent/assets/architecture/system.md` or `.agent/assets/domain/general.md` exists, load `.agent/skills/index/references/reindex.md`. Check `last_synced_commit` in `AGENT.md` and run `git log <sha>..HEAD --oneline` on `src/` to identify unindexed human commits.
+   - **Reindex path**: If `.agent/assets/index.md`, `.agent/assets/architecture/system.md`, or `.agent/assets/domain/general.md` exists, load `.agent/skills/index/references/reindex.md`. Check `last_synced_commit` on line 1 of `.agent/assets/index.md` and run `git log <sha>..HEAD --oneline` on source directories to identify unindexed commits.
    - **Greenfield path**: If the repository contains no source code or package manifests (empty or only git metadata), load `.agent/skills/index/references/greenfield.md`.
    - **Brownfield path**: If source files and manifests exist but living assets are missing, load `.agent/skills/index/references/brownfield.md`.
 
@@ -47,19 +46,38 @@ All output produced by this skill and all generated asset files must follow `.ag
    - Record visited paths, candidate modules, settled domain concepts, and pending user questions.
    - Write confirmed findings directly to `.agent/assets/` as discovery progresses. Living assets serve as the permanent index state.
 
-3. **Lifecycle flow verification**:
-   - Verify that `.agent/assets/flow/lifecycle.md` exists and defines the repository lifecycle pipeline.
-   - If missing, run the `flow` skill workflow to establish repository defaults based on testing conventions.
-
-4. **User interview gate**:
+3. **User interview gate**:
    - Run the `grill-me` skill workflow sequentially for all ambiguous boundaries, business invariants, and entity lifecycles.
+   - Comply with `honest` rules: provide objective mechanistic pushback on technical flaws without flattery or apologies.
    - Finding technical facts is the agent's job. Explaining business rules, external partner guarantees, and architectural intent belongs to the user.
    - Never extrapolate unproven business logic from code naming alone.
 
-5. **Asset synthesis and validation**:
-   - Verify all generated or updated assets match templates defined in corresponding skills (`architecture`, `domain`, `language`, `testing`, `why`, `flow`).
-   - Run the unslop style audit across all generated files before concluding.
-   - Update or verify the root `AGENT.md`, recording `last_synced_commit: <sha>` using current `git rev-parse HEAD`.
+4. **Asset synthesis and validation**:
+   - Verify all generated or updated assets match templates defined in corresponding skills (`architecture`, `domain`, `language`, `testing`, `why`).
+   - Run the unslop and honest style audits across all generated files before concluding.
+   - Update or generate `.agent/assets/index.md`, placing `last_synced_commit: <sha>` on line 1 using current `git rev-parse HEAD`.
+
+---
+
+## Template for index.md (.agent/assets/index.md)
+
+```markdown
+last_synced_commit: <git_commit_sha>
+
+# Repository assets index
+
+## Quick commands
+- **Build**: `<canonical build command>`
+- **Lint**: `<canonical lint/vet command>`
+- **Test**: `<canonical test command>`
+
+## Living assets
+- **Architecture**: `.agent/assets/architecture/system.md`
+- **Domain**: `.agent/assets/domain/general.md`
+- **Testing**: `.agent/assets/testing/conventions.md`
+- **Language**: `.agent/assets/language/<lang>.md`
+- **Decisions (why)**: `.agent/assets/why/`
+```
 
 ---
 
