@@ -12,19 +12,13 @@ Domain knowledge represents business reality: customer workflows, external vendo
 
 ## Style and writing rules
 
-All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
-- State what the system does, not how it feels (Rule 27). Name mechanisms and concrete behaviors.
-- Prefer active voice (Rule 29). Name the entity or component acting.
-- Use plain words over metaphors (Rules 7, 26, 31). Avoid filler words and buzzwords.
-- Sentence case headings (Rule 17). Straight quotes only (Rule 19). No decorative emojis (Rule 18).
-- No em dashes (Rule 13). Use periods or commas.
-- One idea per sentence (Rule 28).
+All output produced by this skill must comply with `unslop` and `honest` rules.
 
 ## Workflow
 
 1. **Discovery and user interrogation**:
    - Inspect existing codebase interfaces, data structures, and documentation to discover candidate domain concepts.
-   - Run the `grill-me` skill workflow for every ambiguous entity, lifecycle transition, or business invariant.
+   - Run the `grill-me` skill workflow for ambiguous entities, lifecycle transitions, or business invariants relevant to the current task.
    - Ask questions sequentially. Require the user to define or confirm terms, validation rules, and business relationships.
    - Never extrapolate unproven business logic from code naming alone.
 

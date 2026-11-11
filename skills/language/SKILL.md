@@ -19,13 +19,7 @@ Do not create guides proactively for languages not actively used in the codebase
 
 ## Style and writing rules
 
-Write directly in the target tone from the start:
-- State what the code must do, not how it feels (Unslop Rule 27). Name mechanisms and concrete behaviors.
-- Prefer active voice (Rule 29).
-- Sentence case headings (Rule 17). Straight quotes only (Rule 19). No decorative emojis (Rule 18).
-- No em dashes (Rule 13). Use periods or commas.
-- One idea per sentence (Rule 28).
-- Keep total length under 60 lines. Focus on high-signal guardrails rather than teaching the language from scratch.
+All output produced by this skill must comply with `unslop` and `honest` rules. Keep total length under 60 lines. Focus on high-signal guardrails rather than teaching the language from scratch.
 
 ## Workflow
 

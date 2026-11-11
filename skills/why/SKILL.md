@@ -17,14 +17,7 @@ Never guess or hallucinate historical intent. Gather rationale using this strict
 
 ## Style and writing rules
 
-Follow the direct writing guidelines from `.agent/skills/unslop/SKILL.md`:
-- State concrete facts and mechanisms, not feelings (Rule 27).
-- Prefer active voice (Rule 29).
-- Plain words over metaphors (Rules 7, 26, 31).
-- Sentence case headings (Rule 17). Straight quotes only (Rule 19). No decorative emojis (Rule 18).
-- No em dashes (Rule 13). Use periods or commas.
-- One idea per sentence (Rule 28).
-- Keep total file length under 30 lines.
+All output produced by this skill must comply with `unslop` and `honest` rules. Keep total file length under 30 lines.
 
 ## Workflow
 

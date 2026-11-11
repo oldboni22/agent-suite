@@ -13,14 +13,12 @@ An established codebase contains concrete technical artifacts, but business inte
    - Read package manifests (`go.mod`, `package.json`, `Cargo.toml`, `pyproject.toml`) to determine runtime versions, dependencies, and project root.
    - Locate primary entry points (`main.go`, `index.ts`, `app.py`, `src/`) and configuration files.
    - Identify existing build, lint, and test scripts.
-   - Initialize `.agent/scope/index-state.md` with discovered roots and entry points.
 
 2. **User-guided structural exploration**:
    - Ask the user to identify the primary functional areas and highlight critical paths.
    - Explore directories incrementally based on user guidance rather than reading all files into context at once.
-   - Log visited directories in `.agent/scope/index-state.md`.
    - Identify ingress adapters, core business logic, and egress integrations.
-   - Write `.agent/assets/architecture/system.md` using the template from `.agent/skills/architecture/SKILL.md`.
+   - Write `.agent/assets/architecture/system.md` using the template from `architecture`.
    - For major self-contained subsystems, write `.agent/assets/architecture/modules/<module-name>.md`.
 
 3. **Domain elicitation and grill gate**:
@@ -44,10 +42,8 @@ An established codebase contains concrete technical artifacts, but business inte
 
 6. **Asset index manifest generation**:
    - Generate `.agent/assets/index.md`.
-   - Place `last_synced_commit: <sha>` on line 1 using current `git rev-parse HEAD`.
    - List canonical CLI commands (build, lint, test) and relative asset pointers.
    - Do not create or overwrite user-owned root files (`AGENT.md`, `CLAUDE.md`).
 
 7. **Style audit**:
-   - Validate every generated asset file against `.agent/skills/unslop/SKILL.md` and `.agent/skills/honest/SKILL.md`.
-   - Confirm all headings use sentence case, straight quotes, active voice, and zero decorative emojis or em dashes.
+   - Validate every generated asset file against `unslop` and `honest` rules.

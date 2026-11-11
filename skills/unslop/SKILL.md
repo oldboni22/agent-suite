@@ -8,6 +8,10 @@ disable-model-invocation: true
 
 Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
 
+## Lifecycle and Activation
+- **Topic-persistent**: Once loaded or read, these writing rules remain active across all subsequent turns in the current topic.
+- **Do not re-invoke**: Apply these rules passively to all generated output and file edits. Never call `activateSkill` for `unslop` repeatedly before responding.
+
 ## Usage in Workflows
 
 Skills and agents generating persistent files in `.agent/assets/` must pass their final markdown draft through these rules before saving.

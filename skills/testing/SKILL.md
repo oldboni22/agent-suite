@@ -10,13 +10,7 @@ Discover, document, and maintain repository-specific test conventions, runners, 
 
 ## Style and writing rules
 
-All output produced by this skill must follow `.agent/skills/unslop/SKILL.md`:
-- State what the test suite does, not how it feels (Rule 27). Name mechanisms and concrete behaviors.
-- Prefer active voice (Rule 29). Name the component acting.
-- Use plain words over metaphors (Rules 7, 26, 31). Avoid filler words and buzzwords.
-- Sentence case headings (Rule 17). Straight quotes only (Rule 19). No decorative emojis (Rule 18).
-- No em dashes (Rule 13). Use periods or commas.
-- One idea per sentence (Rule 28).
+All output produced by this skill must comply with `unslop` and `honest` rules.
 
 ## Workflow
 

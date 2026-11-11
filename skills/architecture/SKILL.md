@@ -10,13 +10,7 @@ Analyze and document application layers, communication boundaries, and component
 
 ## Style and Writing Guidelines
 
-Write directly in the target tone from the start to save tokens and avoid secondary rewrite passes. Follow these rules from `.agent/skills/unslop/SKILL.md`:
-- State what the system does, not how it feels (Rule 27). Name mechanisms and concrete behaviors.
-- Prefer active voice (Rule 29). Name the component acting.
-- Use plain, concrete words over abstract metaphors (Rules 7, 26, 31). Avoid "substrate", "tapestry", "leverage", "surface".
-- Sentence case headings (Rule 17). Straight quotes only (Rule 19). No decorative emojis (Rule 18).
-- No em dashes (Rule 13). Use periods or commas.
-- One idea per sentence (Rule 28).
+Write directly in the target tone from the start. All output produced by this skill must comply with `unslop` and `honest` rules.
 
 ## Workflow
 

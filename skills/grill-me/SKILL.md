@@ -9,6 +9,10 @@ Interview the user relentlessly until you reach a shared understanding. Map the 
 
 Work the tree sequentially. The frontier contains decisions whose prerequisites are already settled. Ask questions one at a time. This avoids cognitive overload and allows each answer to reshape the remaining tree.
 
+## Lifecycle and Activation
+- **Topic-persistent**: Once activated, `grill-me` mode governs all interview turns until the frontier is cleared and a plan is produced.
+- **Do not re-invoke**: Do not re-call `activateSkill` on each question turn.
+
 ## Modes of engagement
 
 ### 1. Discussion and architectural sparring mode
@@ -51,4 +55,5 @@ Yes. <1 to 2 sentences explaining why Option A is chosen.>
 3. **No premature tree mutations**: While discussing a branch, do not alter the broader decision tree until the trade-off is settled.
 4. **Explore before asking**: Finding facts is your job, never the user's. Search codebases, inspect configurations, or check documentation directly. Never ask the user for information you can discover yourself.
 5. **Dynamic frontier**: Each settled user answer resolves one branch and unblocks dependent decisions. Recompute the frontier after each answer.
-6. **Termination**: The interview ends when the frontier is empty. Every architectural choice, boundary, and trade-off must be settled. Do not proceed to implementation or file creation until the user confirms you have reached a shared understanding.
+6. **Bounded scope**: Frontier questions must be bounded to the current milestone (maximum 3 to 5 key decisions). Defer downstream implementation questions that belong to coding or testing.
+7. **Termination**: The interview ends when the frontier is empty. Every architectural choice, boundary, and trade-off must be settled. Do not proceed to implementation or file creation until the user confirms you have reached a shared understanding.
